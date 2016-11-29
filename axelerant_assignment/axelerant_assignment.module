@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ * This module alter the "Site Information" form and generate JSON format of page content type.
+ *
+ * @author Samit K <contact@samitkhulve.com>
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function axelerant_assignment_menu() {
+  $items = array();
+  $items['page_json/%/%node'] = array(
+    'title callback' => 'page_json_title',
+    'title arguments' => array(1, 2),
+    'page callback' => 'page_json',
+    'page arguments' => array(1, 2),
+    'access callback' => 'page_json_access',
+    'access arguments' => array(1, 2),
+    'file' => 'includes/axelerant_assignment.page_json.inc',
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Access callback for page_json/%/%node
+ * @param String $siteapikey
+ * @param Object $page_node
+ */
+function page_json_access($siteapikey, $page_node) {
+  if ($siteapikey == variable_get('siteapikey') &&
+      (isset($page_node->type) && $page_node->type == 'page')) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Title callback for page_json/%/%node
+ * @param String $siteapikey
+ * @param Object $page_node
+ */
+function page_json_title($siteapikey, $page_node) {
+  $title = t('!siteapikey - !page_title', array('!siteapikey' => $siteapikey, '!page_title' => $page_node->title));
+  return $title;
+}
+
+/**
+ * Implements hook_form_alter
+ */
+function axelerant_assignment_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'system_site_information_settings':
+
+      $siteapikey_default_val = 'No API Key yet';
+
+      $form['siteapikey'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Site API Key'),
+        '#default_value' => variable_get('siteapikey', $siteapikey_default_val),
+        '#weight' => -1,
+        '#attributes' => array('onfocus' => "javascript: if (this.value == '{$siteapikey_default_val}'){this.value = '';}",
+          "onblur" => "javascript: if (jQuery.trim(this.value) == ''){this.value = '{$siteapikey_default_val}';}",
+          "onclick" => "javascript: if (this.value == '{$siteapikey_default_val}'){this.value = '';}",),
+      );
+
+      // Update button value if [Site API Key] is set
+      if (variable_get('siteapikey') && variable_get('siteapikey') != 'No API Key yet') {
+        $form['actions']['submit']['#value'] = t('Update Configuration');
+      }
+
+      //Add new Submit Call back
+      $form['#submit'][] = 'system_site_information_siteapikey';
+      break;
+  }
+}
+
+/**
+ * Custom submit function to show success Message of [Site API Key]
+ * @param Array $form
+ * @param Array $form_state
+ */
+function system_site_information_siteapikey(&$form, &$form_state) {
+  if (isset($form_state['values']['siteapikey']) && $form_state['values']['siteapikey'] != 'No API Key yet') {
+    $success_msg = t('The Site API Key has been saved with value: %value .', array('%value' => variable_get('siteapikey')));
+    drupal_set_message($success_msg);
+  }
+  else {
+    variable_del('siteapikey');
+  }
+}
