@@ -15,6 +15,6 @@ Total time to complete:
 
 	B: complete task: 1.45 Min
 
-	C: Unit tesing: 15 Min
+	C: Unit testing: 15 Min
 
 	D: Add on GitHub: 10 Min
