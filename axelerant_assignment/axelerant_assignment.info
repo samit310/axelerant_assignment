@@ -1,4 +1,4 @@
 name = Axelerant Assignment
-description = Custom module to generate JSON format of page content type.
+description = Custom module to generate JSON format of Basic page content type.
 package = Custom
 core = 7.x
