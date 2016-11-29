@@ -32,7 +32,7 @@ function axelerant_assignment_menu() {
  */
 function page_json_access($siteapikey_arg, $page_node) {
   $siteapikey = variable_get('siteapikey');
-  if (($siteapikey_arg ==  $siteapikey && $siteapikey != 'No API Key yet') &&
+  if (($siteapikey_arg == $siteapikey && $siteapikey != 'No API Key yet') &&
       (isset($page_node->type) && $page_node->type == 'page')) {
     return TRUE;
   }
