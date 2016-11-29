@@ -14,7 +14,7 @@
  */
 function page_json($siteapikey, $page_node) {
 
-  //Convert Basci page node object to json & return
+  //Convert Basic page node object to json & return
   $page_json_repre = json_encode($page_node);
 
   return $page_json_repre;
